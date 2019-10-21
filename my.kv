@@ -1,0 +1,157 @@
+<ViewListWindow>:
+
+    box: Box
+
+    FloatLayout:
+        canvas.before:
+            Color:
+                rgba: (225/255), (223/255), (59/255), 1,
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        cols:1
+        rows:2
+
+        FloatLayout:
+            size: root.width, root.height/2
+            cols:1
+            rows:2
+
+            Label:
+                text: "Identified Fruits"
+                color: (235/255), (40/255), (186/255), 1
+                size_hint: 0.8, 0.2
+                pos_hint: {"x":0.1, "top":1}
+                font_size: (root.width**2 + root.height**2) / 14**4
+
+            ScrollView:
+                do_scroll_x: False
+                do_scroll_y: True
+                pos_hint: {"bottom": 0.5, "top": 0.85, "center_x": 0.5}
+                size_hint: None, None
+                height: root.height/2
+
+                BoxLayout:
+                    orientation: "vertical"
+                    id: Box
+                    size_hint_x: 1
+                    size_hint_y: None
+                    height: sum(x.height for x in self.children)
+
+        Button:
+            pos_hint:{"center_x":0.5,"y":0.05}
+            size_hint: 0.4, 0.1
+            text: "Back"
+            font_size: (root.width**2 + root.height**2) / 14**4
+            on_release:
+                root.manager.transition.direction = "left"
+                root.back()
+        Button:
+            pos_hint:{"center_x":0.5,"y":0.20}
+            size_hint: 0.4, 0.1
+            text: "Load"
+            font_size: (root.width**2 + root.height**2) / 14**4
+            on_release:
+                root.displayList()
+
+
+<HomePageWindow>:
+    name: "home"
+
+    FloatLayout:
+        canvas.before:
+            Color:
+                rgba: (225/255), (223/255), (59/255), 1,
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        Label:
+            text:"Tutti Frutti"
+            color: (235/255), (40/255), (186/255), 1
+            font_size: (root.width**2 + root.height**2) / 13**4
+            pos_hint: {"center_x":0.5, "top":0.9}
+            size_hint: 0.35, 0.15
+
+        Button:
+            pos_hint:{"center_x":0.5,"y":0.1}
+            size_hint: 0.4, 0.1
+            font_size: (root.width**2 + root.height**2) / 15**4
+            text: "View Identified Fruits"
+            on_release:
+                root.manager.transition.direction = "up"
+                root.viewList()
+
+        Button:
+            pos_hint:{"center_x":0.5,"y":0.3}
+            size_hint: 0.4, 0.1
+            font_size: (root.width**2 + root.height**2) / 15**4
+            text: "Snap New Fruit"
+            on_release:
+                root.manager.transition.direction = "right"
+                root.snapFruit()
+
+
+<MainWindow>:
+
+    box: Box
+    camera: Camera
+    label: FruitLabel
+
+    FloatLayout:
+        canvas.before:
+            Color:
+                rgba: (225/255), (223/255), (59/255), 1,
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        BoxLayout:
+            orientation: 'vertical'
+            id: Box
+            pos_hint: {"center_x": 0.5, "y": 0.6}
+            size_hint: 0.8, 0.2
+            Camera:
+                id: Camera
+                play: True
+                resolution: 100, 100
+
+        Button:
+            text: "Take Photo"
+            size_hint: 0.4, 0.1
+            pos_hint:{"center_x": 0.5, "y": 0.35}
+            on_release:
+                root.cameraClick(root.newFruit)
+
+        Label:
+            text: "New Fruit"
+            color: (235/255), (40/255), (186/255), 1
+            pos_hint: {"center_x": 0.5, "y": 0.80}
+            size_hint: 0.8, 0.2
+            font_size: (root.width**2 + root.height**2) / 13**4
+
+        Label:
+            id: FruitLabel
+            pos_hint:{"x": 0.1, "y":0.4}
+            size_hint:0.8, 0.2
+            text: "This is a : "
+            color: (235/255), (40/255), (186/255), 1
+            font_size: (root.width**2 + root.height**2) / 14**4
+
+
+        Button:
+            pos_hint:{"center_x":0.5, "y": 0.2}
+            size_hint: 0.4,0.1
+            text: "Save"
+            on_release:
+                root.save(root.firebase, root.newFruit)
+                app.root.current = "home"
+                root.manager.transition.direction = "down"
+
+        Button:
+            pos_hint:{"center_x":0.5, "y": 0.1}
+            size_hint: 0.4,0.1
+            text: "Discard"
+            on_release:
+                root.discard()
+                root.manager.transition.direction = "down"
